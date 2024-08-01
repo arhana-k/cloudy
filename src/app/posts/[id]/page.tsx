@@ -1,12 +1,19 @@
+import prisma from "@/lib/db";
+import { notFound } from "next/navigation";
 import { Suspense, useState } from "react";
 
 export default async function Page({ params }: {
   params: {id: string} })
   {
   await new Promise((resolve) => setTimeout(resolve, 1000));
-  const response = await fetch(`https://dummyjson.com/posts/${params.id}`);
-  const post = await response.json();
-
+  const post = await prisma.post.findUnique({
+    where: {
+      id: parseInt(params.id),
+    },
+  });
+  if (!post){
+    notFound();
+  }
 
 
   return (
